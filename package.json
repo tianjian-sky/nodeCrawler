@@ -1,0 +1,20 @@
+{
+  "name": "spider",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "run": "node spider.js"
+  },
+  "keywords": [
+    "a",
+    "node.js",
+    "spider"
+  ],
+  "author": "yutianjian",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^1.14.0"
+  }
+}
