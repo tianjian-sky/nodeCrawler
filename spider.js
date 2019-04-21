@@ -30,7 +30,7 @@ async function getProvince(loc, addressList) {
         timeout: 300000
     });
     await page.waitForSelector(PROVINCE_SELECTOR, {
-        timeout: 300000
+        timeout: 60000
     })
     const links = await page.evaluate(resultSelector => {
         const anchors = document.querySelectorAll(resultSelector)
@@ -61,7 +61,7 @@ async function getCity(loc, addressObj) {
         timeout: 300000
     });
     await page.waitForSelector(CITY_SELECTOR, {
-        timeout: 300000
+        timeout: 60000
     })
     const links = await page.evaluate(resultSelector => {
         const anchors = document.querySelectorAll(resultSelector)
@@ -87,7 +87,7 @@ async function getCity(loc, addressObj) {
                 sub: []
             }
             addressObj.sub.push(city)
-            await delay(() => getDistrict(ENTRY_POINT.replace('index.html', e.link), city), 500)
+            await delay(() => getDistrict(ENTRY_POINT.replace('index.html', e.link), city), 1000)
         }
     }
 
