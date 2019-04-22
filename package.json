@@ -16,5 +16,9 @@
   "license": "ISC",
   "dependencies": {
     "puppeteer": "^1.14.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tianjian-sky/nodeCrawler.git"
   }
 }

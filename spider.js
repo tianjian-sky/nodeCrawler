@@ -49,7 +49,7 @@ async function getProvince(loc, addressList) {
         if (!e.link || !e.name) continue
         let addressObj = {name: e.name, sub:[], code: ''}
         addressList.push(addressObj)
-        await delay( () => getCity(ENTRY_POINT.replace('index.html', e.link), addressObj), 300)
+        await delay( () => getCity(ENTRY_POINT.replace('index.html', e.link), addressObj), 1000)
     }
 
 }
@@ -87,11 +87,9 @@ async function getCity(loc, addressObj) {
                 sub: []
             }
             addressObj.sub.push(city)
-            await delay(() => getDistrict(ENTRY_POINT.replace('index.html', e.link), city), 1000)
+            await delay(() => getDistrict(ENTRY_POINT.replace('index.html', e.link), city), 1200)
         }
     }
-
-    
 }
 
 async function getDistrict(loc, addressObj) {
@@ -109,13 +107,16 @@ async function getDistrict(loc, addressObj) {
             let tds = e.querySelectorAll('a')
             return {
                 code: tds && tds[0] && tds[0].innerHTML && tds[0].innerHTML.replace(/0{6}$/, ''),
-                name: tds && tds[1] && tds[1].innerHTML
+                name: tds && tds[1] && tds[1].innerHTML,
+                townFlg: document.querySelectorAll('.towntr').length
             }
         })
     }, DIST_SELECTOR)
 
     page.close()
-
+    if (links.townFlg) {
+        console.log('此市含有镇：' + addressObj.name + ':' + addressObj.code)
+    }
     if (links && links.length) {
         for (e of links) {
             if (!e.code || !e.name) continue
@@ -140,7 +141,13 @@ async function delay(func, delay) {
 function writeFile(json) {
     let date = new Date()
     let fileName = 'address-' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + '.json'
-    fs.writeFile(path.resolve(ROOT_PATH, './dist/' + fileName), JSON.stringify(json), (err) => {
-        if (err) throw err;
-    });
+    fs.readdir(path.resolve(ROOT_PATH, './dist'), (err, files) => {
+        console.log(err, files)
+        if (err) {
+            fs.mkdirSync(path.resolve(ROOT_PATH, './dist'))
+        }
+        fs.writeFile(path.resolve(ROOT_PATH, './dist/' + fileName), JSON.stringify(json), (err) => {
+            if (err) throw err;
+        });
+    })
 }

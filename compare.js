@@ -1,3 +1,7 @@
+const path = require('path')
+const fs = require('fs')
+const ROOT_PATH = path.resolve(__dirname, './')
+
 let pChangeArr = []
 let cChangeArr = []
 let dChangeArr = []
@@ -35,22 +39,75 @@ function compareAddress(newJson, oldJson) {
     } 
 }
 
+function compareOldAddressToNewAddress (oldJson, newJson) {
+    for (p of oldJson) {
+        if (p.code == '90' || p.code == '12' || p.code == '81' || p.code == '000000') continue // 港，澳，台，海外
+        let pi = newJson.findIndex(e => e.code == p.code)
+        if ( pi >= 0){
+            for (city of p.sub) {
+                let ci = newJson[pi].sub.findIndex(e => e.code == city.code)
+                if (ci >= 0) {
+                    for (dist of city.sub) {
+                        let di = newJson[pi].sub[ci].sub.findIndex(e => e.code == dist.code) 
+                        if (di >= 0) {
+                        } else {
+                            dChangeArr.push({type: 'CD', name: dist.name, code: dist.code})
+                        }
+                    }
+                } else {
+                    cChangeArr.push({type: 'CD', name: city.name, code: city.code})
+                }
+            }
+        } else {
+            pChangeArr.push({type: 'CD', name: p.name, code: p.code})
+        }
+    } 
+}
 
 
 function logCompareResult (parr, carr, darr) {
-    // console.dir(parr)
-    // console.dir(carr)
-    // console.dir(darr)
+    var str = ''
     for (item of parr) {
-        console.info('此省份条目有变更：' + item.name + ':' + item.code)
+        if (item.type == 'CD') {
+            console.info('此省份条目有变更（有可能已经被删除）\t' + item.name + '\t' + item.code)
+            str += '此省份条目有变更（有可能已经被删除）\t：' + item.name + '\t' + item.code + '\n'
+        } else {
+            console.info('此省份条目有变更：\t' + item.name + '\t' + item.code)
+            str += '此省份条目有变更：\t' + item.name + '\t' + item.code + '\n'
+        }
     }
     for (item of carr) {
-        console.info('此市级条目有变更：' + item.name + ':' + item.code)
+        if (item.type == 'CD') {
+            console.info('此市级条目有变更（有可能已经被删除）：\t' + item.name + '\t' + item.code)
+            str += '此市级条目有变更（有可能已经被删除）：\t' + item.name + '\t' + item.code + '\n'
+        } else {
+            console.info('此市级条目有变更：\t' + item.name + '\t' + item.code)
+            str += '此市级条目有变更：\t' + item.name + '\t' + item.code + '\n'
+        }
     }
     for (item of darr) {
-        console.info('此区级条目有变更：' + item.name + ':' + item.code)
+        if (item.type == 'CD') {
+            console.info('此区级条目有变更（有可能已经被删除）：\t' + item.name + '\t' + item.code)
+            str += '此区级条目有变更（有可能已经被删除）：\t' + item.name + '\t' + item.code + '\n'
+        } else {
+            console.info('此区级条目有变更：\t' + item.name + '\t' + item.code)
+            str += '此区级条目有变更：\t' + item.name + '\t' + item.code + '\n'
+        }
     }
+    fs.readdir(path.resolve(ROOT_PATH, './logs'), (err, files) => {
+        console.log(err, files)
+        if (err) {
+            fs.mkdirSync(path.resolve(ROOT_PATH, './logs'))
+        }
+        let date = new Date()
+        let fileName = 'log-' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + '.log'
+        fs.writeFile(path.resolve(ROOT_PATH, './logs/' + fileName), str, (err) => {
+            if (err) throw err;
+        });
+    })
 }
 
-compareAddress(require('./dist/address-2019421.json'), require('./addressHistory/address.json'))
+compareAddress(require('./dist/address-2019422.json'), require('./addressHistory/address.json'))
+compareOldAddressToNewAddress(require('./addressHistory/address.json'), require('./dist/address-2019422.json'))
+
 logCompareResult (pChangeArr, cChangeArr, dChangeArr)
