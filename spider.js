@@ -141,12 +141,12 @@ async function delay(func, delay) {
 function writeFile(json) {
     let date = new Date()
     let fileName = 'address-' + date.getFullYear() + (date.getMonth() + 1) + date.getDate() + '.json'
-    fs.readdir(path.resolve(ROOT_PATH, './dist'), (err, files) => {
+    fs.readdir(path.resolve(ROOT_PATH, './fetched'), (err, files) => {
         console.log(err, files)
         if (err) {
-            fs.mkdirSync(path.resolve(ROOT_PATH, './dist'))
+            fs.mkdirSync(path.resolve(ROOT_PATH, './fetched'))
         }
-        fs.writeFile(path.resolve(ROOT_PATH, './dist/' + fileName), JSON.stringify(json), (err) => {
+        fs.writeFile(path.resolve(ROOT_PATH, './fetched/' + fileName), JSON.stringify(json), (err) => {
             if (err) throw err;
         });
     })

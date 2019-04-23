@@ -107,7 +107,7 @@ function logCompareResult (parr, carr, darr) {
     })
 }
 
-compareAddress(require('./dist/address-2019422.json'), require('./addressHistory/address.json'))
-compareOldAddressToNewAddress(require('./addressHistory/address.json'), require('./dist/address-2019422.json'))
+compareAddress(require('./fetched/address-2019422.json'), require('./addressHistory/address.json'))
+compareOldAddressToNewAddress(require('./addressHistory/address.json'), require('./fetched/address-2019422.json'))
 
 logCompareResult (pChangeArr, cChangeArr, dChangeArr)
