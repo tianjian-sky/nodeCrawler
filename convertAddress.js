@@ -10,6 +10,7 @@ let sep_level1 = '	'
 let sep_level2 = '	　　'
 let sep_level3 = '	　　　'
 for (var p of json) {
+    if (p.code == '90' || p.code == '12' || p.code == '81' || p.code == '000000') continue
     str = str.concat(p.code + sep_level1 + p.name + lineBreak)
     if (p.sub && p.sub.length) {
         for (c of p.sub) {
